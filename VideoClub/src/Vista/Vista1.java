@@ -4,28 +4,70 @@
  * and open the template in the editor.
  */
 package Vista;
-/*
+
+import CSV.HelperView;
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
+import Modelo.Conexion;
+import Modelo.Pelicula;
+import dao.ClubDAO;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
-*/
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
+import static javax.swing.JOptionPane.YES_OPTION;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author danic
  */
-public class Vista extends javax.swing.JFrame {
-   /* 
-    private ClienteDAO clienteDAO;
-    private List<Cliente> listaClientes;
-    */
+public class Vista1 extends javax.swing.JFrame {
+       private Conexion con;
+       private List<Cliente> listaClientes;
+       private ClienteDAO clienteDAO;
+       private DefaultTableModel tabla;
+
+    
+  
     /**
      * Creates new form Vista
      */
-    public Vista() {
+    public Vista1() throws SQLException {
+        con = new Conexion();
+        clienteDAO = new ClienteDAO();
+       
+        setTitle("Proyecto Final Programacion");
         initComponents();
+        
+        tabla = new DefaultTableModel();
+        tabla.addColumn("Clientes");
+        tabla.addColumn("Peliculas");
+        tabla.addColumn("Alquiladas");
+        
+        jTable1.setModel(tabla);
+        
+        listaClientes = clienteDAO.obtenerCliente();
+        
+/*
+        for (Cliente listaCliente : listaClientes) {
+        tabla.addColumn(listaCliente.getDni());
+        tabla.addColumn(listaCliente.getNombre());
+        
+        }*/
+        
     }
-    
-    
     
  
 
@@ -75,7 +117,7 @@ public class Vista extends javax.swing.JFrame {
         jButtonLIMPIAR = new javax.swing.JButton();
         jButtonACTUALIZAR = new javax.swing.JButton();
         jScrollPaneLISTA = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextArea1CAJA = new javax.swing.JTextArea();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -164,6 +206,11 @@ public class Vista extends javax.swing.JFrame {
 
         jButtonANADIR.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButtonANADIR.setText("Añadir");
+        jButtonANADIR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonANADIRMouseClicked(evt);
+            }
+        });
         jButtonANADIR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonANADIRActionPerformed(evt);
@@ -172,6 +219,11 @@ public class Vista extends javax.swing.JFrame {
 
         jButtonLIMPIAR.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButtonLIMPIAR.setText("Limpiar");
+        jButtonLIMPIAR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonLIMPIARMouseClicked(evt);
+            }
+        });
 
         jButtonACTUALIZAR.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButtonACTUALIZAR.setText("Actualizar");
@@ -181,9 +233,9 @@ public class Vista extends javax.swing.JFrame {
             }
         });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPaneLISTA.setViewportView(jTextArea1);
+        jTextArea1CAJA.setColumns(20);
+        jTextArea1CAJA.setRows(5);
+        jScrollPaneLISTA.setViewportView(jTextArea1CAJA);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -452,6 +504,10 @@ public class Vista extends javax.swing.JFrame {
                 .addComponent(jLabel19)
                 .addGap(77, 77, 77))
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton6)
@@ -479,10 +535,6 @@ public class Vista extends javax.swing.JFrame {
                     .addComponent(jButton16)
                     .addComponent(jButton12))
                 .addGap(51, 51, 51))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -621,10 +673,106 @@ public class Vista extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton16ActionPerformed
 
+    private void jButtonANADIRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonANADIRMouseClicked
+        // TODO add your handling code here:
+        
+     //Cliente
+     String dni = jTextFieldDNI.getText();
+     String nombre = jTextFieldNOMBRE.getText();
+     String apellidos = jTextFieldAPELLIDOS.getText();
+     String edad = jTextFieldEDAD.getText();
+     
+     System.out.println("Prueba anadir");
+     
+     int contenido = 0;
+     
+        if(dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || edad.isEmpty() ){
+        contenido = 1;
+    }
+    if (contenido == 1){    
+        
+     switch (contenido) {
+         
+        case 1:
+         if(dni.isEmpty()){
+         JOptionPane.showConfirmDialog(null, "Por favor rellene Cliente: DNI", "Añadir", YES_NO_OPTION, QUESTION_MESSAGE);
+         }
+         
+         case 2:
+         if(nombre.isEmpty()){
+         JOptionPane.showConfirmDialog(null, "Por favor rellene Cliente: Nombre", "Añadir", YES_NO_OPTION, QUESTION_MESSAGE);
+         }
+         
+         case 3:
+         if(apellidos.isEmpty()){
+         JOptionPane.showConfirmDialog(null, "Por favor rellene Cliente Apellidos", "Añadir", YES_NO_OPTION, QUESTION_MESSAGE);
+         }
+         
+         case 4:
+         if(edad.isEmpty()){
+         JOptionPane.showConfirmDialog(null, "Por favor rellene Cliente Edad", "Añadir", YES_NO_OPTION, QUESTION_MESSAGE);
+         }
+         
+        break;
+           
+        }
+     
+    }else
+ 
+      if(!dni.isEmpty()){
+            int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro de añadir el usuario", "Añadir", YES_NO_OPTION, QUESTION_MESSAGE);
+                if (respuesta == YES_NO_OPTION){
+                    System.out.println("EXITO11");
+                    Cliente c = new Cliente(dni, nombre, apellidos, edad);
+                     System.out.println("EXITO22");
+                    clienteDAO.anadirCliente(c);
+                     System.out.println("EXITO33");
+                   // clienteDAO.anadirClienteLista(c);
+                     System.out.println("EXITO44");
+                    JOptionPane.showMessageDialog(null, "Cliente añadido correctamente", "Añadir", INFORMATION_MESSAGE);
+                   
+                }else JOptionPane.showMessageDialog(null, "No se puede añadir un Cliente sin el DNI", "Añadir", INFORMATION_MESSAGE);
+        }
+    
+    
+    }//GEN-LAST:event_jButtonANADIRMouseClicked
+
+    private void jButtonLIMPIARMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonLIMPIARMouseClicked
+        // TODO add your handling code here:
+        jTextFieldDNI.setText("");
+        jTextFieldNOMBRE.setText("");
+        jTextFieldAPELLIDOS.setText("");
+        jTextFieldEDAD.setText("");
+        jTextFieldCODIGO.setText("");
+        jTextFieldTITULO.setText("");
+        jTextFieldAUTOR.setText("");
+        jTextFielANIO.setText("");
+        jTextFieldGENERO.setText("");
+        jTextFieldFECHAALQUILADA.setText("");
+        jTextFieldFECHADEVOLUCION.setText("");
+        jTextFieldDNICLIENTE.setText("");
+        jTextFieldCODPELICULA.setText("");
+        jTextArea1CAJA.setText("");
+        
+    }//GEN-LAST:event_jButtonLIMPIARMouseClicked
+
+   public void FechaActual(){
+       
+      Calendar fecha = new GregorianCalendar();
+      int anio = fecha.get(Calendar.YEAR);
+      int mes = fecha.get(Calendar.MONTH);
+      int dia = fecha.get(Calendar.DAY_OF_MONTH);
+      
+      String fechaActual = dia + "/" + (mes+1) + "/" + anio;
+      jTextFieldFECHAALQUILADA.setText(fechaActual);
+   }
+
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+       
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -638,20 +786,26 @@ public class Vista extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Vista().setVisible(true);
+                try {
+                    System.out.println("Prueba de vista");
+                    new Vista1().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Vista1.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -705,7 +859,7 @@ public class Vista extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPaneLISTA;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea1CAJA;
     private javax.swing.JTextField jTextFielANIO;
     private javax.swing.JTextField jTextFieldAPELLIDOS;
     private javax.swing.JTextField jTextFieldAUTOR;
@@ -720,4 +874,5 @@ public class Vista extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldNOMBRE;
     private javax.swing.JTextField jTextFieldTITULO;
     // End of variables declaration//GEN-END:variables
+
 }

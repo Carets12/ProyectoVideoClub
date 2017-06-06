@@ -25,7 +25,6 @@ public class Conexion {
             
         }
         try {
-            System.out.println("exito");
             connection = DriverManager.getConnection("jdbc:sqlite:BD/videoclub.bd");
         } catch (SQLException ex) {
             System.out.println("Problema en la conexion a la base de datos.");
@@ -38,11 +37,11 @@ public class Conexion {
             new Conexion();
         return connection;
     }
-   
-	public static void main(String[] args) {
+    
+  /*public static void main(String[] args) {
 		Connection conexion = new Conexion().getConnection();
 		System.out.println(conexion);
                 
-	}
-        
+	}*/
+    
 }

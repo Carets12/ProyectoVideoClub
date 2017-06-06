@@ -17,56 +17,54 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Daniel Sierra Raez
+ * @author danic
  */
-public class PeliculaDAO implements IPeliculaDAO {
-   
+public class AlquilerDAO implements IAlquiler {
+    
     private Statement statement;
     private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
     private String sql;
     private int rows;
-    private List<Pelicula> listaPelis;
-    private Pelicula p;
+    private List<Alquiler> listaAlquiler;
+    private Alquiler a;
 
-    public PeliculaDAO() {
+    public AlquilerDAO() throws SQLException {
         this.statement = statement;
         this.connection = connection;
-        this.listaPelis = listaPelis;
+        this.listaAlquiler = listaAlquiler;
     }
-    
+   
     @Override
-    public List<Pelicula> obtenerPeli() {
-        p = null;
-        sql = "select * from pelicula";
+    public List<Alquiler> obtenerAlquiler() {
+       a = null;
+        sql = "select * from alquila ";
         try {
             resultSet = statement.executeQuery(sql);
             while(resultSet.next()){
-                String codigo = resultSet.getString("codigo");
-                String titulo = resultSet.getString("titulo");
-                String director = resultSet.getString("director");
-                String anio = resultSet.getString("anio");
-                String genero = resultSet.getString("genero");
-                p = new Pelicula(codigo, titulo, director, anio, genero);
-                listaPelis.add(p);
+                String fecha_alquilada = resultSet.getString("fecha_alquilada");
+                String fecha_devolucion = resultSet.getString("fecha_devolucion");
+                String dniCliente = resultSet.getString("dniCliente");
+                String codPelicula = resultSet.getString("codPelicula");
+                a = new Alquiler(fecha_alquilada, fecha_devolucion, dniCliente, codPelicula);
+                listaAlquiler.add(a);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return listaPelis;
+        return listaAlquiler;
     }
-        
+
     @Override
-    public boolean anadirPeli(Pelicula p) {
+    public boolean anadirAlquiler(Alquiler a) {
         boolean exito = false;
-        sql = "insert into pelicula values = (?, ?, ?, ?, ?)";
+        sql = "insert into alquila values = (?, ?, ?, ?)";
         try {
-            preparedStatement.setString(1, p.getCodigo());
-            preparedStatement.setString(2, p.getTitulo());
-            preparedStatement.setString(3, p.getDirector());
-            preparedStatement.setString(4, p.getAnio());
-            preparedStatement.setString(5, p.getGenero());
+            preparedStatement.setString(1, a.getFecha_alquilada());
+            preparedStatement.setString(2, a.getFecha_devolucion());
+            preparedStatement.setString(3, a.getDniCliente());
+            preparedStatement.setString(4, a.getCodPelicula());            
             rows = preparedStatement.executeUpdate();
             if( rows != 0 ){
                exito = true;
@@ -78,11 +76,11 @@ public class PeliculaDAO implements IPeliculaDAO {
     }
 
     @Override
-    public boolean borrarPeli(Pelicula p) {
-        boolean exito = false;
-        sql = "Delete from pelicula where codigo = ?";
+    public boolean borrarAlquiler(Alquiler a) {
+         boolean exito = false;
+        sql = "Delete from alquila where fecha_alquilada = ?";
         try {
-            preparedStatement.setString(1, p.getCodigo());
+            preparedStatement.setString(1, a.getFecha_alquilada());
             rows = preparedStatement.executeUpdate();
             if ( rows != 0 )
                 exito = true;
@@ -94,15 +92,16 @@ public class PeliculaDAO implements IPeliculaDAO {
     }
 
     @Override
-    public boolean actualizarPeli(Pelicula p) {
+    public boolean actualizarAlquiler(Alquiler a) {
         boolean exito = false;
-        sql = "Update from pelicula set titulo = ?, director = ?, anio = ?, "
-                + "where codigo = ?";
+        sql = "Update from alquila set fecha_devolucion = ?, dniCliente = ?, codPelicula = ?, "
+                + "where fecha_alquilada = ?";
+
         try {
-            preparedStatement.setString(1, p.getTitulo());
-            preparedStatement.setString(2, p.getDirector());
-            preparedStatement.setString(3, p.getAnio());
-            preparedStatement.setString(4, p.getCodigo());
+            preparedStatement.setString(1, a.getFecha_alquilada());
+            preparedStatement.setString(2, a.getFecha_devolucion());
+            preparedStatement.setString(3, a.getDniCliente());
+            preparedStatement.setString(4, a.getCodPelicula());
             rows = preparedStatement.executeUpdate();
             if ( rows != 0 )
                 exito = true;
@@ -113,4 +112,5 @@ public class PeliculaDAO implements IPeliculaDAO {
         return exito;
         
     }
+        
 }

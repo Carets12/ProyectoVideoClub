@@ -13,14 +13,14 @@ public class Pelicula {
     
     private String codigo;
     private String titulo;
-    private String autor;
+    private String director;
     private String anio;
     private String genero;
 
-    public Pelicula(String codigo, String titulo, String autor, String anio, String genero) {
+    public Pelicula(String codigo, String titulo, String director, String anio, String genero) {
         this.codigo = codigo;
         this.titulo = titulo;
-        this.autor = autor;
+        this.director = director;
         this.anio = anio;
         this.genero = genero;
     }
@@ -41,12 +41,12 @@ public class Pelicula {
         this.titulo = titulo;
     }
 
-    public String getAutor() {
-        return autor;
+    public String getDirector() {
+        return director;
     }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public void setDirector(String director) {
+        this.director = director;
     }
 
     public String getAnio() {
@@ -67,7 +67,7 @@ public class Pelicula {
 
     @Override
     public String toString() {
-        return codigo + ", " + titulo + ", " + autor + ", " + anio + ", " + genero;
+        return codigo + ", " + titulo + ", " + director + ", " + anio + ", " + genero;
     }
       
 }
