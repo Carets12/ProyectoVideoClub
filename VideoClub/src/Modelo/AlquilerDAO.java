@@ -5,19 +5,18 @@
  */
 package Modelo;
 
-import dao.ClubDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
- * @author danic
+ * @author Daniel Sierra Raez
  */
 public class AlquilerDAO implements IAlquiler {
     
@@ -30,17 +29,17 @@ public class AlquilerDAO implements IAlquiler {
     private List<Alquiler> listaAlquiler;
     private Alquiler a;
 
-    public AlquilerDAO() throws SQLException {
-        this.statement = statement;
-        this.connection = connection;
-        this.listaAlquiler = listaAlquiler;
+    public AlquilerDAO(){
+        this.connection = Conexion.getConnection();
     }
    
     @Override
     public List<Alquiler> obtenerAlquiler() {
+       listaAlquiler = new ArrayList<>();
        a = null;
         sql = "select * from alquila ";
         try {
+            statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
             while(resultSet.next()){
                 String fecha_alquilada = resultSet.getString("fecha_alquilada");
@@ -51,7 +50,7 @@ public class AlquilerDAO implements IAlquiler {
                 listaAlquiler.add(a);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Obtener : Alquiler");
         }
         return listaAlquiler;
     }
@@ -59,8 +58,9 @@ public class AlquilerDAO implements IAlquiler {
     @Override
     public boolean anadirAlquiler(Alquiler a) {
         boolean exito = false;
-        sql = "insert into alquila values = (?, ?, ?, ?)";
+        sql = "insert into alquila values (?, ?, ?, ?)";
         try {
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, a.getFecha_alquilada());
             preparedStatement.setString(2, a.getFecha_devolucion());
             preparedStatement.setString(3, a.getDniCliente());
@@ -70,22 +70,23 @@ public class AlquilerDAO implements IAlquiler {
                exito = true;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(PeliculaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Añadir : Alquiler");
         }
         return exito;
     }
 
     @Override
     public boolean borrarAlquiler(Alquiler a) {
-         boolean exito = false;
+        boolean exito = false;
         sql = "Delete from alquila where fecha_alquilada = ?";
         try {
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, a.getFecha_alquilada());
             rows = preparedStatement.executeUpdate();
             if ( rows != 0 )
                 exito = true;
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Borrar : Alquiler");
         }
         
         return exito;
@@ -106,11 +107,10 @@ public class AlquilerDAO implements IAlquiler {
             if ( rows != 0 )
                 exito = true;
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Actualizar : Alquiler");
         }
         
         return exito;
         
     }
-        
 }

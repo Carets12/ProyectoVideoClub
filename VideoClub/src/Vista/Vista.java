@@ -4,31 +4,72 @@
  * and open the template in the editor.
  */
 package Vista;
-/*
+
+import Controlador.Controlador;
+import Modelo.AlquilerDAO;
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
+import Modelo.Conexion;
+import Modelo.PeliculaDAO;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
-*/
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
+import static javax.swing.JOptionPane.YES_OPTION;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author danic
+ * @author Daniel Sierra Raez
  */
 public class Vista extends javax.swing.JFrame {
-   /* 
-    private ClienteDAO clienteDAO;
-    private List<Cliente> listaClientes;
-    */
+      // private Conexion14 con;
+       private ClienteDAO clienteDAO;
+       private Cliente c;
+       private PeliculaDAO peliculaDAO;
+    //   private List<Cliente14> listaClientes;
+       private DefaultTableModel tabla = new DefaultTableModel();
+       private DefaultListModel l1 = new DefaultListModel();
+       private DefaultListModel l2 = new DefaultListModel();
+       private DefaultListModel l3 = new DefaultListModel();
+
     /**
      * Creates new form Vista
      */
-    public Vista() {
+    public Vista() throws SQLException {
+     //   con = new Conexion14();
+       
+        setTitle("Proyecto Final Programacion");
+        setVisible(true);
         initComponents();
+           
     }
-    
-    
-    
- 
-
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -58,7 +99,7 @@ public class Vista extends javax.swing.JFrame {
         jLabeGENERO = new javax.swing.JLabel();
         jTextFieldCODIGO = new javax.swing.JTextField();
         jTextFieldTITULO = new javax.swing.JTextField();
-        jTextFieldAUTOR = new javax.swing.JTextField();
+        jTextFieldDIRECTOR = new javax.swing.JTextField();
         jTextFielANIO = new javax.swing.JTextField();
         jTextFieldGENERO = new javax.swing.JTextField();
         jLabelALQUILER = new javax.swing.JLabel();
@@ -75,26 +116,32 @@ public class Vista extends javax.swing.JFrame {
         jButtonLIMPIAR = new javax.swing.JButton();
         jButtonACTUALIZAR = new javax.swing.JButton();
         jScrollPaneLISTA = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextArea1CAJA = new javax.swing.JTextArea();
+        jButtonACTIVARALQUILER = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
-        jButton16 = new javax.swing.JButton();
+        jTextFieldBUSCAR = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jButtonOK = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jListClientes = new javax.swing.JList<>();
+        jLabel1ClientesOpcional = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jListPeliculas = new javax.swing.JList<>();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jListAlquileres = new javax.swing.JList<>();
+        jLabel2PeliculasOpcional = new javax.swing.JLabel();
+        jLabel3AlquileresOpcional = new javax.swing.JLabel();
+        jButton3VolcarAlquileres = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -161,9 +208,19 @@ public class Vista extends javax.swing.JFrame {
 
         jButtonBORRAR.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButtonBORRAR.setText("Borrar");
+        jButtonBORRAR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonBORRARMouseClicked(evt);
+            }
+        });
 
         jButtonANADIR.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButtonANADIR.setText("Añadir");
+        jButtonANADIR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonANADIRMouseClicked(evt);
+            }
+        });
         jButtonANADIR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonANADIRActionPerformed(evt);
@@ -172,6 +229,11 @@ public class Vista extends javax.swing.JFrame {
 
         jButtonLIMPIAR.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButtonLIMPIAR.setText("Limpiar");
+        jButtonLIMPIAR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonLIMPIARMouseClicked(evt);
+            }
+        });
 
         jButtonACTUALIZAR.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButtonACTUALIZAR.setText("Actualizar");
@@ -181,9 +243,17 @@ public class Vista extends javax.swing.JFrame {
             }
         });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPaneLISTA.setViewportView(jTextArea1);
+        jTextArea1CAJA.setColumns(20);
+        jTextArea1CAJA.setRows(5);
+        jScrollPaneLISTA.setViewportView(jTextArea1CAJA);
+
+        jButtonACTIVARALQUILER.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonACTIVARALQUILER.setText("Activar");
+        jButtonACTIVARALQUILER.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonACTIVARALQUILERMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -226,7 +296,7 @@ public class Vista extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextFieldCODIGO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextFieldTITULO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldAUTOR, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldDIRECTOR, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextFielANIO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextFieldEDAD, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextFieldGENERO, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -236,15 +306,6 @@ public class Vista extends javax.swing.JFrame {
                 .addGap(44, 44, 44)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jButtonACTUALIZAR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButtonANADIR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGap(65, 65, 65)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jButtonBORRAR, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButtonLIMPIAR, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(87, 87, 87))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addGap(42, 42, 42)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,7 +323,18 @@ public class Vista extends javax.swing.JFrame {
                                         .addComponent(jTextFieldFECHADEVOLUCION, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jTextFieldDNICLIENTE, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jTextFieldCODPELICULA, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGap(104, 104, 104)))
+                            .addGap(104, 104, 104))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jButtonACTUALIZAR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonANADIR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(65, 65, 65)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButtonBORRAR, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButtonLIMPIAR, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButtonACTIVARALQUILER))
+                            .addGap(87, 87, 87)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabelALQUILER)
                         .addGap(49, 49, 49))
@@ -290,7 +362,7 @@ public class Vista extends javax.swing.JFrame {
                         .addComponent(jTextFieldFECHAALQUILADA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldFECHADEVOLUCION, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                    .addComponent(jTextFieldFECHADEVOLUCION)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabelNOMBRE)
                         .addComponent(jTextFieldNOMBRE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -308,7 +380,9 @@ public class Vista extends javax.swing.JFrame {
                     .addComponent(jTextFieldEDAD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelCODPELICULA)
                     .addComponent(jTextFieldCODPELICULA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonACTIVARALQUILER)
+                .addGap(12, 12, 12)
                 .addComponent(jLabelPELICULA, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -327,7 +401,7 @@ public class Vista extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabelAUTOR)
-                            .addComponent(jTextFieldAUTOR, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextFieldDIRECTOR, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabelANIO)
@@ -361,169 +435,169 @@ public class Vista extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton5.setText("< 10");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldBUSCAR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                jTextFieldBUSCARActionPerformed(evt);
             }
         });
 
-        jButton6.setText("<< 20");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel1.setText("BUSCAR");
 
-        jButton7.setText("10 >");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton1.setText("Borrar");
+
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton2.setText("Actualizar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                jButton2ActionPerformed(evt);
             }
         });
 
-        jButton8.setText("20 >>");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jLabel2.setText("Nombre Cliente:");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jLabel3.setText("Titulo Pelicula:");
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                jTextField1ActionPerformed(evt);
             }
         });
 
-        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel17.setText("Clientes");
-
-        jLabel18.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel18.setText("Peliculas");
-
-        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel19.setText("Alquiladas");
-
-        jButton9.setText("< 10");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
-        jButton10.setText("< 10");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-
-        jButton11.setText("10 >");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
-        jButton12.setText("10 >");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-
-        jButton13.setText("<< 20");
-
-        jButton14.setText("20 >>");
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
-            }
-        });
-
-        jButton15.setText("<< 20");
-
-        jButton16.setText("20 >>");
-        jButton16.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton16ActionPerformed(evt);
-            }
-        });
+        jButtonOK.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonOK.setText("OK");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(80, 80, 80)
-                .addComponent(jLabel17)
-                .addGap(156, 156, 156)
-                .addComponent(jLabel18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel19)
-                .addGap(77, 77, 77))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton6)
-                    .addComponent(jButton5))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton8)
-                        .addGap(85, 85, 85)
-                        .addComponent(jButton13))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton9)))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton14)
-                    .addComponent(jButton11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton15)
-                    .addComponent(jButton10))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton16)
-                    .addComponent(jButton12))
-                .addGap(51, 51, 51))
-            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextField1)
+                                    .addComponent(jTextField2)))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextFieldBUSCAR, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonOK)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel17)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton7)
-                    .addComponent(jButton9)
-                    .addComponent(jButton10)
-                    .addComponent(jButton11)
-                    .addComponent(jButton12))
+                    .addComponent(jLabel1)
+                    .addComponent(jTextFieldBUSCAR, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonOK))
+                .addGap(37, 37, 37)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton8)
-                    .addComponent(jButton6)
-                    .addComponent(jButton14)
-                    .addComponent(jButton13)
-                    .addComponent(jButton16)
-                    .addComponent(jButton15))
-                .addContainerGap(109, Short.MAX_VALUE))
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Tabla", jPanel3);
+
+        jScrollPane2.setViewportView(jListClientes);
+
+        jLabel1ClientesOpcional.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1ClientesOpcional.setText("Clientes");
+
+        jScrollPane3.setViewportView(jListPeliculas);
+
+        jScrollPane4.setViewportView(jListAlquileres);
+
+        jLabel2PeliculasOpcional.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel2PeliculasOpcional.setText("Peliculas");
+
+        jLabel3AlquileresOpcional.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel3AlquileresOpcional.setText("Alquileres");
+
+        jButton3VolcarAlquileres.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton3VolcarAlquileres.setText("Volcar");
+        jButton3VolcarAlquileres.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3VolcarAlquileresMouseClicked(evt);
+            }
+        });
+
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton3.setText("Actualizar");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 738, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(83, 83, 83)
+                .addComponent(jLabel1ClientesOpcional, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(153, 153, 153)
+                .addComponent(jLabel2PeliculasOpcional, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                .addComponent(jLabel3AlquileresOpcional)
+                .addGap(74, 74, 74))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(18, 18, 18)
+                .addComponent(jButton3VolcarAlquileres, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 493, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1ClientesOpcional, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2PeliculasOpcional)
+                    .addComponent(jLabel3AlquileresOpcional))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane2))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3VolcarAlquileres)
+                    .addComponent(jButton3))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Opcional", jPanel4);
@@ -585,52 +659,501 @@ public class Vista extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonACTUALIZARActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void jButtonANADIRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonANADIRMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_jButtonANADIRMouseClicked
+    /*
+    public Conexion14 getCon() {
+        return con;
+    }
+*//*
+    public void setCon(Conexion14 con) {
+        this.con = con;
+    }
+*/
+    public DefaultListModel getL1() {
+        return l1;
+    }
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+    public DefaultListModel getL2() {
+        return l2;
+    }
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
+    public DefaultListModel getL3() {
+        return l3;
+    }
+    
+    public JList<String> getjListAlquileres() {
+        return jListAlquileres;
+    }
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton9ActionPerformed
+    public JList<String> getjListClientes() {
+        return jListClientes;
+    }
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton10ActionPerformed
+    public JList<String> getjListPeliculas() {
+        return jListPeliculas;
+    }
+    
+    
+/*
+    public List<Cliente14> getListaClientes() {
+        return listaClientes;
+    }
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton11ActionPerformed
+    public void setListaClientes(List<Cliente14> listaClientes) {
+        this.listaClientes = listaClientes;
+    }
+*/
+    public ClienteDAO getClienteDAO() {
+        return clienteDAO;
+    }
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton12ActionPerformed
+    public void setClienteDAO(ClienteDAO clienteDAO) {
+        this.clienteDAO = clienteDAO;
+    }
 
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton14ActionPerformed
+    public PeliculaDAO getPeliculaDAO() {
+        return peliculaDAO;
+    }
 
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+    public void setPeliculaDAO(PeliculaDAO peliculaDAO) {
+        this.peliculaDAO = peliculaDAO;
+    }
+    
+    public DefaultTableModel getTabla() {
+        return tabla;
+    }
+
+    public void setTabla(DefaultTableModel tabla) {
+        this.tabla = tabla;
+    }
+
+    public JButton getjButtonACTUALIZAR() {
+        return jButtonACTUALIZAR;
+    }
+
+    public void setjButtonACTUALIZAR(JButton jButtonACTUALIZAR) {
+        this.jButtonACTUALIZAR = jButtonACTUALIZAR;
+    }
+
+    public JButton getjButtonANADIR() {
+        return jButtonANADIR;
+    }
+
+    public JButton getjButton3VolcarAlquileres() {
+        return jButton3VolcarAlquileres;
+    }
+    
+    
+
+    public void setjButtonANADIR(JButton jButtonANADIR) {
+        this.jButtonANADIR = jButtonANADIR;
+    }
+
+    public JButton getjButtonBORRAR() {
+        return jButtonBORRAR;
+    }
+
+    public JButton getjButtonACTIVARALQUILER() {
+        return jButtonACTIVARALQUILER;
+    }
+
+    public void setjButtonBORRAR(JButton jButtonBORRAR) {
+        this.jButtonBORRAR = jButtonBORRAR;
+    }
+
+    public JButton getjButtonLIMPIAR() {
+        return jButtonLIMPIAR;
+    }
+
+    public void setjButtonLIMPIAR(JButton jButtonLIMPIAR) {
+        this.jButtonLIMPIAR = jButtonLIMPIAR;
+    }
+
+    public JLabel getjLabeGENERO() {
+        return jLabeGENERO;
+    }
+
+    public void setjLabeGENERO(JLabel jLabeGENERO) {
+        this.jLabeGENERO = jLabeGENERO;
+    }
+
+    public JLabel getjLabel5EDAD() {
+        return jLabel5EDAD;
+    }
+
+    public void setjLabel5EDAD(JLabel jLabel5EDAD) {
+        this.jLabel5EDAD = jLabel5EDAD;
+    }
+
+    public JLabel getjLabelALQUILER() {
+        return jLabelALQUILER;
+    }
+
+    public void setjLabelALQUILER(JLabel jLabelALQUILER) {
+        this.jLabelALQUILER = jLabelALQUILER;
+    }
+
+    public JLabel getjLabelANIO() {
+        return jLabelANIO;
+    }
+
+    public void setjLabelANIO(JLabel jLabelANIO) {
+        this.jLabelANIO = jLabelANIO;
+    }
+
+    public JLabel getjLabelAPELLIDOS() {
+        return jLabelAPELLIDOS;
+    }
+
+    public void setjLabelAPELLIDOS(JLabel jLabelAPELLIDOS) {
+        this.jLabelAPELLIDOS = jLabelAPELLIDOS;
+    }
+
+    public JLabel getjLabelAUTOR() {
+        return jLabelAUTOR;
+    }
+
+    public void setjLabelAUTOR(JLabel jLabelAUTOR) {
+        this.jLabelAUTOR = jLabelAUTOR;
+    }
+
+    public JLabel getjLabelCLIENTE() {
+        return jLabelCLIENTE;
+    }
+
+    public void setjLabelCLIENTE(JLabel jLabelCLIENTE) {
+        this.jLabelCLIENTE = jLabelCLIENTE;
+    }
+
+    public JLabel getjLabelCODIGO() {
+        return jLabelCODIGO;
+    }
+
+    public void setjLabelCODIGO(JLabel jLabelCODIGO) {
+        this.jLabelCODIGO = jLabelCODIGO;
+    }
+
+    public JLabel getjLabelCODPELICULA() {
+        return jLabelCODPELICULA;
+    }
+
+    public void setjLabelCODPELICULA(JLabel jLabelCODPELICULA) {
+        this.jLabelCODPELICULA = jLabelCODPELICULA;
+    }
+
+    public JLabel getjLabelDNI() {
+        return jLabelDNI;
+    }
+
+    public void setjLabelDNI(JLabel jLabelDNI) {
+        this.jLabelDNI = jLabelDNI;
+    }
+
+    public JLabel getjLabelDNICLIENTE() {
+        return jLabelDNICLIENTE;
+    }
+
+    public void setjLabelDNICLIENTE(JLabel jLabelDNICLIENTE) {
+        this.jLabelDNICLIENTE = jLabelDNICLIENTE;
+    }
+
+    public JLabel getjLabelFECHAALQUILADA() {
+        return jLabelFECHAALQUILADA;
+    }
+
+    public void setjLabelFECHAALQUILADA(JLabel jLabelFECHAALQUILADA) {
+        this.jLabelFECHAALQUILADA = jLabelFECHAALQUILADA;
+    }
+
+    public JLabel getjLabelFECHADEVOLUCION() {
+        return jLabelFECHADEVOLUCION;
+    }
+
+    public void setjLabelFECHADEVOLUCION(JLabel jLabelFECHADEVOLUCION) {
+        this.jLabelFECHADEVOLUCION = jLabelFECHADEVOLUCION;
+    }
+
+    public JLabel getjLabelNOMBRE() {
+        return jLabelNOMBRE;
+    }
+
+    public void setjLabelNOMBRE(JLabel jLabelNOMBRE) {
+        this.jLabelNOMBRE = jLabelNOMBRE;
+    }
+
+    public JLabel getjLabelPELICULA() {
+        return jLabelPELICULA;
+    }
+
+    public void setjLabelPELICULA(JLabel jLabelPELICULA) {
+        this.jLabelPELICULA = jLabelPELICULA;
+    }
+
+    public JLabel getjLabelTITULO() {
+        return jLabelTITULO;
+    }
+
+    public void setjLabelTITULO(JLabel jLabelTITULO) {
+        this.jLabelTITULO = jLabelTITULO;
+    }
+
+    public JMenu getjMenu1() {
+        return jMenu1;
+    }
+
+    public void setjMenu1(JMenu jMenu1) {
+        this.jMenu1 = jMenu1;
+    }
+
+    public JMenu getjMenu2() {
+        return jMenu2;
+    }
+
+    public void setjMenu2(JMenu jMenu2) {
+        this.jMenu2 = jMenu2;
+    }
+
+    public JMenu getjMenu3() {
+        return jMenu3;
+    }
+
+    public void setjMenu3(JMenu jMenu3) {
+        this.jMenu3 = jMenu3;
+    }
+
+    public JMenuBar getjMenuBar1() {
+        return jMenuBar1;
+    }
+
+    public void setjMenuBar1(JMenuBar jMenuBar1) {
+        this.jMenuBar1 = jMenuBar1;
+    }
+
+    public JMenuItem getjMenuItem1() {
+        return jMenuItem1;
+    }
+
+    public void setjMenuItem1(JMenuItem jMenuItem1) {
+        this.jMenuItem1 = jMenuItem1;
+    }
+
+    public JPanel getjPanel1() {
+        return jPanel1;
+    }
+
+    public void setjPanel1(JPanel jPanel1) {
+        this.jPanel1 = jPanel1;
+    }
+
+    public JPanel getjPanel2() {
+        return jPanel2;
+    }
+
+    public void setjPanel2(JPanel jPanel2) {
+        this.jPanel2 = jPanel2;
+    }
+
+    public JPanel getjPanel3() {
+        return jPanel3;
+    }
+
+    public void setjPanel3(JPanel jPanel3) {
+        this.jPanel3 = jPanel3;
+    }
+
+    public JPanel getjPanel4() {
+        return jPanel4;
+    }
+
+    public void setjPanel4(JPanel jPanel4) {
+        this.jPanel4 = jPanel4;
+    }
+
+    public JScrollPane getjScrollPane1() {
+        return jScrollPane1;
+    }
+
+    public void setjScrollPane1(JScrollPane jScrollPane1) {
+        this.jScrollPane1 = jScrollPane1;
+    }
+
+    public JScrollPane getjScrollPaneLISTA() {
+        return jScrollPaneLISTA;
+    }
+
+    public void setjScrollPaneLISTA(JScrollPane jScrollPaneLISTA) {
+        this.jScrollPaneLISTA = jScrollPaneLISTA;
+    }
+
+    public JTabbedPane getjTabbedPane1() {
+        return jTabbedPane1;
+    }
+
+    public void setjTabbedPane1(JTabbedPane jTabbedPane1) {
+        this.jTabbedPane1 = jTabbedPane1;
+    }
+
+    public JTable getjTable1() {
+        return jTable1;
+    }
+
+    public void setjTable1(JTable jTable1) {
+        this.jTable1 = jTable1;
+    }
+
+    public JTextArea getjTextArea1CAJA() {
+        return jTextArea1CAJA;
+    }
+
+    public void setjTextArea1CAJA(JTextArea jTextArea1CAJA) {
+        this.jTextArea1CAJA = jTextArea1CAJA;
+    }
+
+    public JTextField getjTextFielANIO() {
+        return jTextFielANIO;
+    }
+
+    public void setjTextFielANIO(JTextField jTextFielANIO) {
+        this.jTextFielANIO = jTextFielANIO;
+    }
+
+    public JTextField getjTextFieldAPELLIDOS() {
+        return jTextFieldAPELLIDOS;
+    }
+
+    public void setjTextFieldAPELLIDOS(JTextField jTextFieldAPELLIDOS) {
+        this.jTextFieldAPELLIDOS = jTextFieldAPELLIDOS;
+    }
+
+    public JTextField getjTextFieldCODIGO() {
+        return jTextFieldCODIGO;
+    }
+
+    public void setjTextFieldCODIGO(JTextField jTextFieldCODIGO) {
+        this.jTextFieldCODIGO = jTextFieldCODIGO;
+    }
+
+    public JTextField getjTextFieldCODPELICULA() {
+        return jTextFieldCODPELICULA;
+    }
+
+    public void setjTextFieldCODPELICULA(JTextField jTextFieldCODPELICULA) {
+        this.jTextFieldCODPELICULA = jTextFieldCODPELICULA;
+    }
+
+    public JTextField getjTextFieldDIRECTOR() {
+        return jTextFieldDIRECTOR;
+    }
+
+    public void setjTextFieldDIRECTOR(JTextField jTextFieldDIRECTOR) {
+        this.jTextFieldDIRECTOR = jTextFieldDIRECTOR;
+    }
+
+    public JTextField getjTextFieldDNI() {
+        return jTextFieldDNI;
+    }
+
+    public void setjTextFieldDNI(JTextField jTextFieldDNI) {
+        this.jTextFieldDNI = jTextFieldDNI;
+    }
+
+    public JTextField getjTextFieldDNICLIENTE() {
+        return jTextFieldDNICLIENTE;
+    }
+
+    public void setjTextFieldDNICLIENTE(JTextField jTextFieldDNICLIENTE) {
+        this.jTextFieldDNICLIENTE = jTextFieldDNICLIENTE;
+    }
+
+    public JTextField getjTextFieldEDAD() {
+        return jTextFieldEDAD;
+    }
+
+    public void setjTextFieldEDAD(JTextField jTextFieldEDAD) {
+        this.jTextFieldEDAD = jTextFieldEDAD;
+    }
+
+    public JTextField getjTextFieldFECHAALQUILADA() {
+        return jTextFieldFECHAALQUILADA;
+    }
+
+    public void setjTextFieldFECHAALQUILADA(JTextField jTextFieldFECHAALQUILADA) {
+        this.jTextFieldFECHAALQUILADA = jTextFieldFECHAALQUILADA;
+    }
+
+    public JTextField getjTextFieldFECHADEVOLUCION() {
+        return jTextFieldFECHADEVOLUCION;
+    }
+
+    public void setjTextFieldFECHADEVOLUCION(JTextField jTextFieldFECHADEVOLUCION) {
+        this.jTextFieldFECHADEVOLUCION = jTextFieldFECHADEVOLUCION;
+    }
+
+    public JTextField getjTextFieldGENERO() {
+        return jTextFieldGENERO;
+    }
+
+    public void setjTextFieldGENERO(JTextField jTextFieldGENERO) {
+        this.jTextFieldGENERO = jTextFieldGENERO;
+    }
+
+    public JTextField getjTextFieldNOMBRE() {
+        return jTextFieldNOMBRE;
+    }
+
+    public void setjTextFieldNOMBRE(JTextField jTextFieldNOMBRE) {
+        this.jTextFieldNOMBRE = jTextFieldNOMBRE;
+    }
+
+    public JTextField getjTextFieldTITULO() {
+        return jTextFieldTITULO;
+    }
+
+    public void setjTextFieldTITULO(JTextField jTextFieldTITULO) {
+        this.jTextFieldTITULO = jTextFieldTITULO;
+    }
+
+    private void jButtonLIMPIARMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonLIMPIARMouseClicked
+        // TODO add your handling code here:   
+    }//GEN-LAST:event_jButtonLIMPIARMouseClicked
+
+    private void jButton3VolcarAlquileresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3VolcarAlquileresMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton16ActionPerformed
+    }//GEN-LAST:event_jButton3VolcarAlquileresMouseClicked
+
+    private void jButtonACTIVARALQUILERMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonACTIVARALQUILERMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonACTIVARALQUILERMouseClicked
+
+    private void jTextFieldBUSCARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBUSCARActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldBUSCARActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButtonBORRARMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonBORRARMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonBORRARMouseClicked
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+   // public static void main(String args[]) {
+       
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
+/*        try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -638,45 +1161,61 @@ public class Vista extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista114.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista114.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista114.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Vista114.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the form *//*
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Vista().setVisible(true);
+                try {
+                    Vista114 vista = new Vista114();
+                    vista.setVisible(true);
+                    ClienteDAO14 cliente = new ClienteDAO14();
+                    PeliculaDAO14 pelicula = new PeliculaDAO14();
+                    AlquilerDAO14 alquiler = new AlquilerDAO14();
+                    
+                    Controlador14 c = new Controlador14(vista, cliente, pelicula, alquiler);
+                    c.fechaActual();
+                    c.tabla();
+                    c.rellenaCliente();
+                    c.rellenaPelicula();
+                    c.desactivarCamposAlquiler();
+                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(Vista114.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
-
+*/
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton3VolcarAlquileres;
+    private javax.swing.JButton jButtonACTIVARALQUILER;
     private javax.swing.JButton jButtonACTUALIZAR;
     private javax.swing.JButton jButtonANADIR;
     private javax.swing.JButton jButtonBORRAR;
     private javax.swing.JButton jButtonLIMPIAR;
+    private javax.swing.JButton jButtonOK;
     private javax.swing.JLabel jLabeGENERO;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel1ClientesOpcional;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel2PeliculasOpcional;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel3AlquileresOpcional;
     private javax.swing.JLabel jLabel5EDAD;
     private javax.swing.JLabel jLabelALQUILER;
     private javax.swing.JLabel jLabelANIO;
@@ -692,6 +1231,9 @@ public class Vista extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelNOMBRE;
     private javax.swing.JLabel jLabelPELICULA;
     private javax.swing.JLabel jLabelTITULO;
+    private javax.swing.JList<String> jListAlquileres;
+    private javax.swing.JList<String> jListClientes;
+    private javax.swing.JList<String> jListPeliculas;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -702,15 +1244,21 @@ public class Vista extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPaneLISTA;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea1CAJA;
     private javax.swing.JTextField jTextFielANIO;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextFieldAPELLIDOS;
-    private javax.swing.JTextField jTextFieldAUTOR;
+    private javax.swing.JTextField jTextFieldBUSCAR;
     private javax.swing.JTextField jTextFieldCODIGO;
     private javax.swing.JTextField jTextFieldCODPELICULA;
+    private javax.swing.JTextField jTextFieldDIRECTOR;
     private javax.swing.JTextField jTextFieldDNI;
     private javax.swing.JTextField jTextFieldDNICLIENTE;
     private javax.swing.JTextField jTextFieldEDAD;
@@ -720,4 +1268,5 @@ public class Vista extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldNOMBRE;
     private javax.swing.JTextField jTextFieldTITULO;
     // End of variables declaration//GEN-END:variables
+
 }

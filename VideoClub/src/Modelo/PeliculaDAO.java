@@ -5,20 +5,20 @@
  */
 package Modelo;
 
-import dao.ClubDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
  * @author Daniel Sierra Raez
  */
+
 public class PeliculaDAO implements IPeliculaDAO {
    
     private Statement statement;
@@ -31,16 +31,18 @@ public class PeliculaDAO implements IPeliculaDAO {
     private Pelicula p;
 
     public PeliculaDAO() {
-        this.statement = statement;
-        this.connection = connection;
-        this.listaPelis = listaPelis;
+        this.connection = Conexion.getConnection();
+        
     }
     
     @Override
     public List<Pelicula> obtenerPeli() {
+        listaPelis = new ArrayList<>();
         p = null;
         sql = "select * from pelicula";
+        
         try {
+            statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
             while(resultSet.next()){
                 String codigo = resultSet.getString("codigo");
@@ -52,7 +54,7 @@ public class PeliculaDAO implements IPeliculaDAO {
                 listaPelis.add(p);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Obtener : Pelicula");
         }
         return listaPelis;
     }
@@ -60,8 +62,10 @@ public class PeliculaDAO implements IPeliculaDAO {
     @Override
     public boolean anadirPeli(Pelicula p) {
         boolean exito = false;
-        sql = "insert into pelicula values = (?, ?, ?, ?, ?)";
+        
+        sql = "insert into pelicula values (?, ?, ?, ?, ?)";
         try {
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, p.getCodigo());
             preparedStatement.setString(2, p.getTitulo());
             preparedStatement.setString(3, p.getDirector());
@@ -72,7 +76,7 @@ public class PeliculaDAO implements IPeliculaDAO {
                exito = true;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(PeliculaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Añadir : Pelicula");
         }
         return exito;
     }
@@ -82,12 +86,13 @@ public class PeliculaDAO implements IPeliculaDAO {
         boolean exito = false;
         sql = "Delete from pelicula where codigo = ?";
         try {
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, p.getCodigo());
             rows = preparedStatement.executeUpdate();
             if ( rows != 0 )
                 exito = true;
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Borrar : Pelicula");
         }
         
         return exito;
@@ -107,7 +112,7 @@ public class PeliculaDAO implements IPeliculaDAO {
             if ( rows != 0 )
                 exito = true;
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+             System.out.println("Error en la sentencia SQL: Actualizar : Pelicula");
         }
         
         return exito;

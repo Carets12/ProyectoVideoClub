@@ -59,5 +59,4 @@ public class Alquiler {
     public String toString() {
         return fecha_alquilada + ", " + fecha_devolucion + ", " + dniCliente + ", " + codPelicula;
     }
-    
 }

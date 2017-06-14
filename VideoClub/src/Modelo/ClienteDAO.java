@@ -5,7 +5,6 @@
  */
 package Modelo;
 
-import dao.ClubDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -23,14 +21,18 @@ import java.util.logging.Logger;
 public class ClienteDAO implements IClienteDAO {
     
     private Statement statement;
-    private Connection connection = Conexion.getConnection();
+    private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
     private String sql;
     private int rows;
     private List<Cliente> listaClientes;
     private Cliente c;
-    
+
+    public ClienteDAO() {
+        this.connection = Conexion.getConnection();
+    }
+      
     @Override
     public List<Cliente> obtenerCliente() {
         listaClientes = new ArrayList<>();
@@ -48,11 +50,10 @@ public class ClienteDAO implements IClienteDAO {
                 listaClientes.add(c);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Obtener : Cliente");
         }
         return listaClientes;
     }
-
     
     @Override
     public boolean anadirCliente(Cliente c) {
@@ -67,10 +68,10 @@ public class ClienteDAO implements IClienteDAO {
             rows = preparedStatement.executeUpdate();
             if( rows != 0 ){
                exito = true;
-            } System.out.println("Cliente anadido");
+            }
         } catch (SQLException ex) {
             //System.out.println("El cliente no se ha podido anadir correctamente");
-            Logger.getLogger(PeliculaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Añadir : Cliente");
         }
         return exito;
     }
@@ -80,12 +81,13 @@ public class ClienteDAO implements IClienteDAO {
         boolean exito = false;
         sql = "Delete from cliente where dni = ?";
         try {
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, c.getDni());
             rows = preparedStatement.executeUpdate();
             if ( rows != 0 )
                 exito = true;
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Borrar : Cliente");
         }
         
         return exito;
@@ -105,24 +107,10 @@ public class ClienteDAO implements IClienteDAO {
             if ( rows != 0 )
                 exito = true;
         } catch (SQLException ex) {
-            Logger.getLogger(ClubDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error en la sentencia SQL: Actualizar : Cliente");
         }
         
         return exito;
-        
-    }
-    /*
-      public void anadirClienteLista(Cliente c){
-        listaClientes.add(c);
-    }
-    */
-    
-    public static void main (String [] args) {
-        ClienteDAO cd = new ClienteDAO();
-        Cliente c = new Cliente("4325235","Daniela","Seera Seea","15");
-        cd.anadirCliente(c);
-        System.out.println(c);
-        
         
     }
 }

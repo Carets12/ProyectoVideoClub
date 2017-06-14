@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author danic
+ * @author Daniel Sierra Raez
  */
 public interface IAlquiler {
     
