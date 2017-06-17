@@ -65,9 +65,13 @@ public class AppRun {
                     Controlador c = new Controlador(vista, cliente, pelicula, alquiler);
                     c.fechaActual();
                     c.tabla();
-                    c.rellenaCliente();
-                    c.rellenaPelicula();
+                    c.rellenaClienteOpcional();
+                    c.rellenaPeliculaOpcional();
+                    c.actualizarListaAlquiler();
                     c.desactivarCamposAlquiler();
+                    c.creditosActivados();
+                    
+                    vista.getMouseListeners();
                     
                 } catch (SQLException ex) {
                     Logger.getLogger(Vista.class.getName()).log(Level.SEVERE, null, ex);

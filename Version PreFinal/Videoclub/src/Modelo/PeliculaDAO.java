@@ -97,8 +97,27 @@ public class PeliculaDAO implements IPeliculaDAO {
         
         return exito;
     }
-
-    @Override
+    
+    
+    public String buscaTitulo(String codigo){
+        String titulo="";
+        sql = "select titulo from pelicula where codigo = ?";
+        
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, codigo);
+            while(resultSet.next()){
+                titulo = resultSet.getString("titulo");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error en la sentencia SQL: Obtener : Pelicula");
+        }
+        return titulo;
+    }
+    
+    
+/*
+   // @Override
     public boolean actualizarPeli(Pelicula p) {
         boolean exito = false;
         sql = "Update from pelicula set titulo = ?, director = ?, anio = ?, "
@@ -117,5 +136,5 @@ public class PeliculaDAO implements IPeliculaDAO {
         
         return exito;
         
-    }
+    }*/
 }

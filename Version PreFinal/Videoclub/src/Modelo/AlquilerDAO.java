@@ -78,10 +78,11 @@ public class AlquilerDAO implements IAlquiler {
     @Override
     public boolean borrarAlquiler(Alquiler a) {
         boolean exito = false;
-        sql = "Delete from alquila where fecha_alquilada = ?";
+        sql = "Delete from alquila where dniCliente = ? and codPelicula = ?";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, a.getFecha_alquilada());
+            preparedStatement.setString(1, a.getDniCliente());
+            preparedStatement.setString(2, a.getCodPelicula());
             rows = preparedStatement.executeUpdate();
             if ( rows != 0 )
                 exito = true;
@@ -91,7 +92,10 @@ public class AlquilerDAO implements IAlquiler {
         
         return exito;
     }
-
+    
+    
+    
+/*
     @Override
     public boolean actualizarAlquiler(Alquiler a) {
         boolean exito = false;
@@ -112,5 +116,5 @@ public class AlquilerDAO implements IAlquiler {
         
         return exito;
         
-    }
+    }*/
 }

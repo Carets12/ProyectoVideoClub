@@ -15,7 +15,5 @@ public interface IAlquiler {
     
     List<Alquiler> obtenerAlquiler();
     boolean anadirAlquiler(Alquiler a);
-    boolean borrarAlquiler(Alquiler a);
-    boolean actualizarAlquiler(Alquiler a);
-    
+    boolean borrarAlquiler(Alquiler a);    
 }

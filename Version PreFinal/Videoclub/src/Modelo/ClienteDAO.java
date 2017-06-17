@@ -92,9 +92,26 @@ public class ClienteDAO implements IClienteDAO {
         
         return exito;
     }
+    
+    
+    public String buscaNombre(String dni){
+        String nombre="";
+        sql = "select nombre from cliente where dni=?";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, dni);
+            while(resultSet.next()){
+                nombre = resultSet.getString("nombre");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error en la sentencia SQL: Obtener : Cliente");
+        }
+        return nombre;
+    }
+    
 
-    @Override
-    public boolean actualizarCliente(Cliente c) {
+   // @Override
+    /*public boolean actualizarCliente(Cliente c) {
          boolean exito = false;
         sql = "Update from cliente set nomobre = ?, apellidos = ?, edad = ?, "
                 + "where dni = ?";
@@ -112,5 +129,5 @@ public class ClienteDAO implements IClienteDAO {
         
         return exito;
         
-    }
+    }*/
 }

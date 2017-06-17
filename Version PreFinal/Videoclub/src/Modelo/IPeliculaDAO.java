@@ -11,10 +11,9 @@ import java.util.List;
  *
  * @author Daniel Sierra Raez
  */
-public interface IClienteDAO {
-   
-    List<Cliente> obtenerCliente();
-    boolean anadirCliente(Cliente c);
-    boolean borrarCliente(Cliente c);
-    boolean actualizarCliente(Cliente c);
+public interface IPeliculaDAO {
+    
+    List<Pelicula> obtenerPeli();
+    boolean anadirPeli(Pelicula p);
+    boolean borrarPeli(Pelicula p);  
 }
